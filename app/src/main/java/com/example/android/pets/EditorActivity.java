@@ -16,7 +16,7 @@
 package com.example.android.pets;
 
 import android.content.ContentValues;
-import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
@@ -31,7 +31,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.android.pets.data.PetContract.PetEntry;
-import com.example.android.pets.data.PetDbHelper;
 
 /**
  * Allows user to create a new pet or edit an existing one.
@@ -122,11 +121,6 @@ public class EditorActivity extends AppCompatActivity {
         // Integer.parseInt("1") --> 1 ex for ones converted to integers
         int weight = Integer.parseInt(weightString);
 
-        // Create database helper
-        PetDbHelper mDbHelper = new PetDbHelper(this);
-
-        // Get database in write mode
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         // Create ContentValues object where column names = keys
         // pet attributes from editor = values
@@ -136,16 +130,15 @@ public class EditorActivity extends AppCompatActivity {
         values.put(PetEntry.COLUMN_PET_GENDER, mGender);
         values.put(PetEntry.COLUMN_PET_WEIGHT, weight);
 
-        // Insert new row for pet in database, returning the ID of the new row
-        long newRowId = db.insert(PetEntry.TABLE_NAME, null, values);
+        // Insert new pet into provider, returning {@link PetEntry#CONTENT_URI}
+        // for the new pet
+        Uri newUri = getContentResolver().insert(PetEntry.CONTENT_URI, values);
 
-        // Show toast message depending on whether or not insertion was successful
-        if (newRowId == -1) {
-            // If row ID is -1, then there was an error with insertion.
-            Toast.makeText(this, getString(R.string.toast_fail), Toast.LENGTH_SHORT).show();
+        // Show toast depending on whether or not the insertion was successful
+        if (newUri == null) {
+            Toast.makeText(this, getString(R.string.editor_insert_pet_failed), Toast.LENGTH_SHORT).show();
         } else {
-            // Otherwise, it was a success and we can display the new row ID toast.
-            Toast.makeText(this, getString(R.string.toast_success) + newRowId, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.editor_insert_pet_successful), Toast.LENGTH_SHORT).show();
         }
     }
 

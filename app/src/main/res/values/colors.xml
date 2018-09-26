@@ -25,4 +25,13 @@
 
     <!-- Primary dark color for the editor -->
     <color name="editorColorPrimaryDark">#394450</color>
+
+    <!-- Color of 1st list item TextView -->
+    <color name="listViewTextView1">#2B3D4D</color>
+
+    <!-- Color of 2nd list item TextView -->
+    <color name="listViewTextView2">#AEB6BD</color>
+
+    <!-- Color for activity_catalog subtitle TextView -->
+    <color name="subtitleTextView">#A2AAB0</color>
 </resources>
